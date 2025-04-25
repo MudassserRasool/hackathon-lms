@@ -1,0 +1,5 @@
+{
+  "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
+  "appService.defaultWebAppToDeploy": "undefined/subscriptions/5c3af4d4-9d60-440d-853f-2ef78633e319/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/my-food-new-29-12-25",
+  "appService.deploySubpath": "."
+}
