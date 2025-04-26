@@ -4,9 +4,6 @@
   "description": "",
   "main": "index.mjs",
   "type": "module",
-  "engines": {
-    "node": ">=18 <22"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.mjs",
