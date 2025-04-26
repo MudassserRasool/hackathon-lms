@@ -24,7 +24,7 @@ router.get('/:role', getAllUsers);
 router.delete('/:id', deleteUser);
 
 // verify otp
-router.post('/verify-signup-otp', verifyOtp);
+router.post('/verify-otp', verifyOtp);
 
 // resend otp to email
 router.post('/resend-otp', resendOtp);

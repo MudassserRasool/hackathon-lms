@@ -1,4 +1,5 @@
 import requireAuth from '../middlewares/requireAuth.js';
+import playlistRouter from '../routes/playlistRoutes.js';
 import profileRouter from '../routes/profileRoute.js';
 import userRouter from '../routes/user.js';
 const apiRoutes = [
@@ -10,6 +11,11 @@ const apiRoutes = [
   {
     baseResource: 'profile',
     router: profileRouter,
+    middlewares: [requireAuth],
+  },
+  {
+    baseResource: 'playlist',
+    router: playlistRouter,
     middlewares: [requireAuth],
   },
 ];

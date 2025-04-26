@@ -26,15 +26,12 @@ const loginUser = async (req, res, next) => {
 const registerUser = async (req, res, next) => {
   const { email, phone, password, role } = req.body;
   // Check that both email and password are provided
-  if (!email || !password | !phone) {
+  if (!email || !password) {
     return res.status(401).send({ message: 'Enter all input fields' });
   }
 
   if (!validator.isEmail(email)) {
     ExceptionHandler.BadRequest('Invalid Email');
-  }
-  if (!validator.isMobilePhone(phone)) {
-    ExceptionHandler.BadRequest('Invalid Phone');
   }
 
   if (password.length < 6) {
@@ -63,7 +60,6 @@ const registerUser = async (req, res, next) => {
     const hash = await bcrypt.hash(password, salt);
     const user = new userModel({
       email,
-      phone,
       password: hash,
       verificationCode: OTP,
       role,
@@ -124,7 +120,7 @@ const verifyOtp = async (req, res, next) => {
       ExceptionHandler.NotFound(messages.NOT_FOUND_USER);
     }
 
-    if (user.verificationCode !== otp) {
+    if (user.verificationCode != otp) {
       ExceptionHandler.BadRequest(messages.INVALID_OTP);
     }
 

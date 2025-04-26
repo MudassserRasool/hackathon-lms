@@ -9,13 +9,33 @@ const playlistSchema = new Schema(
     },
     title: {
       type: String,
-      required: true,
+      required: false,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
       required: true,
     },
+    isCompleted: {
+      type: Boolean,
+      default: false,
+    },
+    videos: [
+      {
+        title: {
+          type: String,
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
+        transcript: {
+          type: String,
+          required: false,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
