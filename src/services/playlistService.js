@@ -28,7 +28,7 @@ class PlaylistService {
     const playlistVideos = await this.getAllPlaylistVideos(playlistId);
 
     console.log('Playlist Videos:', playlistVideos);
-    return;
+    // return;
     const playlist = await playlistModel.create({
       link,
       title,

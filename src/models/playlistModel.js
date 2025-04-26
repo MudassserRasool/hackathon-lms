@@ -26,7 +26,15 @@ const playlistSchema = new Schema(
           type: String,
           required: true,
         },
-        url: {
+        videoId: {
+          type: String,
+          required: true,
+        },
+        thumbnail: {
+          type: String,
+          required: true,
+        },
+        videoUrl: {
           type: String,
           required: true,
         },
