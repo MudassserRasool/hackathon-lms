@@ -3,7 +3,9 @@ import successResponse from '../utils/successResponse.js';
 class PlaylistController {
   async getPlaylists(req, res, next) {
     try {
+      console.log(req.user._id.toString());
       const playlists = await playlistService.getPlaylists(req, res);
+      console.log(playlists);
       successResponse(res, 'Playlists fetched successfully', playlists);
     } catch (error) {
       next(error);
@@ -13,6 +15,28 @@ class PlaylistController {
     try {
       const playlist = await playlistService.createPlaylist(req, res);
       successResponse(res, 'Playlist created successfully', playlist);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async enrollToPlaylist(req, res, next) {
+    try {
+      const playlist = await playlistService.enrollToPlaylist(req, res);
+      successResponse(res, 'Enrolled to playlist successfully', playlist);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getEnrolledPlaylists(req, res, next) {
+    try {
+      const playlists = await playlistService.getEnrolledPlaylists(req, res);
+      successResponse(
+        res,
+        'Enrolled playlists fetched successfully',
+        playlists
+      );
     } catch (error) {
       next(error);
     }

@@ -53,16 +53,16 @@ const registerUser = async (req, res, next) => {
         ExceptionHandler.Forbidden(messages.NOT_VERIFIED_USER);
       }
     }
-    const OTP = otp();
-    await emailService.sendEmail(email, OTP);
-    // await twilioService.sendSmsOtp(phone, OTP);
+    // const OTP = otp();
+    // await emailService.sendEmail(email, OTP);
+    // // await twilioService.sendSmsOtp(phone, OTP);
 
     const hash = await bcrypt.hash(password, salt);
     const user = new userModel({
       email,
       password: hash,
-      verificationCode: OTP,
-      role,
+      // verificationCode: OTP,
+      // role,
     });
 
     const token = generateToken(user._id);
@@ -70,14 +70,10 @@ const registerUser = async (req, res, next) => {
     const registeredUser = await user.save();
     // registeredUser.token = token;
 
-    successResponse(
-      res,
-      'User Registered Otp send to your email , Please verify otp to login',
-      {
-        ...registeredUser.toObject(), // Include user details
-        // token, // Include the token explicitly
-      }
-    );
+    successResponse(res, 'You have rfegistered successfully,', {
+      ...registeredUser.toObject(), // Include user details
+      token, // Include the token explicitly
+    });
   } catch (error) {
     next(error);
   }

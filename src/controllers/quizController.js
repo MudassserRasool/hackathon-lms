@@ -3,9 +3,10 @@ import successResponse from '../utils/successResponse.js';
 
 class QuizController {
   async generateQuiz(req, res, next) {
-    const { prompt } = req.body;
+    const { prompt, videoUrl } = req.body;
+    const userId = req.user._id;
     try {
-      const quiz = await quizService.generateQuiz(prompt);
+      const quiz = await quizService.generateQuiz(prompt, userId, videoUrl);
       return successResponse(res, 'Quiz generated successfully', quiz);
     } catch (error) {
       next(error);

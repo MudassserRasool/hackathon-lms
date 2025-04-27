@@ -14,16 +14,16 @@ const userSchema = new Schema({
   },
   isVerified: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   verificationCode: {
     type: String,
-    required: true,
+    required: false,
   },
   role: {
     type: String,
-    enum: ['rider', 'customer', 'admin'],
-    default: 'customer',
+    enum: ['student'],
+    default: 'student',
   },
 });
 // userSchema.index({ email: 1 });

@@ -14,33 +14,94 @@ const youtube = google.youtube({
 });
 class PlaylistService {
   async getPlaylists(req, res) {
+    console.log('---------------------------------');
     const userId = req.user._id.toString();
-
-    const playlists = await playlistModel.find({ user: userId });
+    console.log('---------------------------------');
+    console.log(userId);
+    console.log('---------------------------------');
+    const playlists = await playlistModel.find({ author: userId });
     return playlists;
   }
 
   async createPlaylist(req, res) {
     const { link } = req.body;
     const userId = req.user._id.toString();
-    const title = await this.getPlaylistTitle(req.body.link);
+    const isPlaylistExists = await this.checkIfPlaylistExists(link);
+    if (isPlaylistExists) {
+      const enrolledPlaylists = await this.enrollToPlaylist(
+        req,
+        isPlaylistExists._id
+      );
+      return enrolledPlaylists;
+    }
+    const { title, description } = await this.getPlaylistTitle(link);
     const playlistId = await this.extractPlaylistId(link);
     const playlistVideos = await this.getAllPlaylistVideos(playlistId);
 
-    console.log('Playlist Videos:', playlistVideos);
     // return;
     const playlist = await playlistModel.create({
       link,
       title,
-      user: userId,
+      description,
+      author: userId,
+      thumbnail: playlistVideos[0].thumbnail,
       videos: playlistVideos,
+      playlistUsers: [
+        {
+          userId: userId,
+          isCompleted: false,
+          isEnrolled: true,
+        },
+      ],
     });
     return playlist;
   }
 
-  async getPlaylists(req, res) {
+  async checkIfPlaylistExists(link) {
+    const isPlaylistExists = await playlistModel.findOne({ link });
+    return isPlaylistExists;
+  }
+
+  async enrollToPlaylist(req, playListId) {
     const userId = req.user._id.toString();
-    const playlists = await playlistModel.find({ user: userId });
+    console.log('==============================');
+    console.log(playListId);
+    console.log('==============================');
+    const findPlaylist = await playlistModel.findById({ _id: playListId });
+    if (!findPlaylist) {
+      console.log(
+        '---------------------------------************************************************************************************'
+      );
+      ExceptionHandler.NotFound('Playlist not found');
+    }
+    const isUserAlreadyEnrolled = findPlaylist.playlistUsers.find(
+      (user) => user.userId.toString() === userId
+    );
+    if (isUserAlreadyEnrolled) {
+      ExceptionHandler.BadRequest('Already enrolled to the playlist');
+    }
+    findPlaylist.playlistUsers.push({
+      userId,
+      isCompleted: false,
+      isEnrolled: true,
+    });
+    await findPlaylist.save();
+    return findPlaylist;
+  }
+
+  async getEnrolledPlaylists(req) {
+    const userId = req.user._id.toString();
+    console.log(userId);
+    const playlists = await playlistModel.find(
+      {
+        'playlistUsers.userId': userId,
+      },
+      {
+        //  remove videos field
+        videos: 0,
+        playlistUsers: 0,
+      }
+    );
     return playlists;
   }
 
@@ -111,8 +172,18 @@ class PlaylistService {
       if (response.data.items.length === 0) {
         ExceptionHandler.NotFound('Playlist not found or is private');
       }
+      // console.log(response.data.items[0]);
+      // return 0;
+      const title = response.data.items[0].snippet.title;
+      const description = response.data.items[0].snippet.description;
+      console.log('---------------------------------');
+      console.log(description);
+      console.log('---------------------------------');
 
-      return response.data.items[0].snippet.title;
+      return {
+        title,
+        description,
+      };
     } catch (error) {
       throw error;
     }

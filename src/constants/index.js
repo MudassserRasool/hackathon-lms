@@ -17,7 +17,7 @@ const trackingId = Math.floor(Math.random() * 1000000000);
 const windowMs = 15 * 60 * 1000;
 const maxRequests = 100;
 const apiVersion = 'v1.0';
-const requestTimeoutDuration = 50000;
+const requestTimeoutDuration = 50000000;
 const dummyPersonImage =
   'https://res.cloudinary.com/dx9n8tsyu/image/upload/v1620343907/person-1_t9yv1a.jpg';
 const dummyProductImage =

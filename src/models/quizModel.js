@@ -7,13 +7,17 @@ const quizSchema = new Schema(
       type: String,
       required: true,
     },
+    videoUrl: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: false,
     },
     difficulty: {
       type: String,
-      enum: ['easy', 'medium', 'hard'],
+      // enum: ['easy', 'medium', 'hard'],
       required: true,
     },
     totalQuestions: {
@@ -29,6 +33,11 @@ const quizSchema = new Schema(
       {
         question: {
           type: String,
+          required: true,
+        },
+        difficulty: {
+          type: String,
+          enum: ['easy', 'medium', 'hard'],
           required: true,
         },
         options: [
