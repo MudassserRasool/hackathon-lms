@@ -3,6 +3,7 @@ import { google } from 'googleapis';
 import { GOOGLE_CONSOLE_API_KEY } from '../constants/environment.js';
 import playlistModel from '../models/playlistModel.js';
 import ExceptionHandler from '../utils/error.js';
+import { isYouTubePlaylist } from '../utils/validator.js';
 import { mergeTranscriptText } from '../utils/youtube.js';
 import youtubeVideoService from './youtubeVideoService.js';
 const YOUTUBE_API_URL = (playlistId) =>
@@ -25,6 +26,9 @@ class PlaylistService {
 
   async createPlaylist(req, res) {
     const { link } = req.body;
+    if (!isYouTubePlaylist(link)) {
+      ExceptionHandler.BadRequest('Please enter valid youtube playlist link');
+    }
     const userId = req.user._id.toString();
     const isPlaylistExists = await this.checkIfPlaylistExists(link);
     if (isPlaylistExists) {
