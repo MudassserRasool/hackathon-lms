@@ -14,7 +14,7 @@ class PlaylistController {
   async createPlaylist(req, res, next) {
     try {
       const playlist = await playlistService.createPlaylist(req, res);
-      successResponse(res, 'Playlist created successfully', playlist);
+      successResponse(res, 'Playlist created successfully', true);
     } catch (error) {
       next(error);
     }

@@ -36,7 +36,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(loggerMiddleware);
 
 app.get(`/`, async (req, res) => {
-  res.send('Hello world, Server is running');
+  res.send(`Hello world, Server is running ${Date.now()}`);
 });
 
 apiRoutes.forEach(({ baseResource, router, middlewares = [] }) => {
