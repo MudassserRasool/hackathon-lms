@@ -12,6 +12,10 @@ class QuizController {
       next(error);
     }
   }
+
+  async startQuiz(req, res, next) {
+    const quiz = await quizService.startQuiz(req, res);
+  }
 }
 
 export default new QuizController();

@@ -19,6 +19,7 @@ import timeout from './middlewares/timeout.js';
 import uploadMiddleware from './middlewares/uploadMiddleware.js';
 
 import apiRoutes from './constants/apiRoutes.js';
+import { getAvailablePort } from './utils/helper.js';
 const app = express();
 // Attach socket.io to the server
 const { server } = initializeSocketIo(app);
@@ -53,6 +54,12 @@ app.use(notFoundMiddleware);
 app.use(errorLogger);
 app.use(errorHandler);
 
-server.listen(PORT, async () => {
-  await connectDb(PORT);
-});
+getAvailablePort(PORT)
+  .then((port) => {
+    server.listen(port, async () => {
+      await connectDb(port);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to find an available port:', err);
+  });

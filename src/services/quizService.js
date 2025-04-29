@@ -1,3 +1,4 @@
+import { QUIZ_TYPES } from '../constants/quiz.js';
 import quizModel from '../models/quizModel.js';
 import ExceptionHandler from '../utils/error.js';
 import aiService from './aiService.js';
@@ -32,6 +33,33 @@ class QuizService {
     const newQuiz = await quizModel.create(quizContent);
 
     return newQuiz;
+  }
+
+  async startQuiz(req, res) {
+    const { quizType , videoUrl} = req.body;
+    const userId = req.user._id.toString();
+
+    if (!quizType) {
+      ExceptionHandler.BadRequest('Quiz type is required');
+    }
+    if (!videoUrl) {
+      ExceptionHandler.BadRequest('Video URL is required');
+    }
+
+    const findQuiz = await quizModel.findOne({ videoUrl });
+    if (!findQuiz) {
+      ExceptionHandler.BadRequest('Quiz not found for this video URL');
+    }
+
+    const quizToAttemptPayload = {
+      userId,
+      videoUrl,
+      
+    };
+
+    if (quizType === QUIZ_TYPES.GRAND) {
+    } else if (quizType === QUIZ_TYPES.PRACTICE) {
+    }
   }
 }
 

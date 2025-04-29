@@ -1,6 +1,8 @@
 import chalk from 'chalk';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+// const net = require('net');
+import net from 'net';
 
 // import os from 'os';
 import mongoose from 'mongoose';
@@ -101,11 +103,49 @@ function convertValidMongoId(id) {
   return mongoose.Types.ObjectId.createFromHexString(id);
 }
 
+function getAvailablePort(startPort = 4000, maxAttempts = 50) {
+  return new Promise((resolve, reject) => {
+    let port = startPort;
+    let attempts = 0;
+
+    const checkPort = (portToCheck) => {
+      const server = net.createServer();
+
+      server.once('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            reject(
+              new Error(
+                `No available port found after ${maxAttempts} attempts.`
+              )
+            );
+          } else {
+            port++;
+            checkPort(port);
+          }
+        } else {
+          reject(err);
+        }
+      });
+
+      server.once('listening', () => {
+        server.close(() => resolve(portToCheck));
+      });
+
+      server.listen(portToCheck);
+    };
+
+    checkPort(port);
+  });
+}
+
 export {
   capitalizeFirstLetter,
   convertValidMongoId,
   createTransporter,
   detailedLog,
   generateToken,
+  getAvailablePort,
   logger,
 };
