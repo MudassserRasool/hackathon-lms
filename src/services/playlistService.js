@@ -51,7 +51,7 @@ class PlaylistService {
       title,
       description,
       author: userId,
-      thumbnail: playlistVideos[0].thumbnail,
+      // thumbnail: playlistVideos[0].thumbnail,
       // videos: playlistVideos,
       playlistUsers: [
         {
