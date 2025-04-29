@@ -43,16 +43,16 @@ class PlaylistService {
     }
     const { title, description } = await this.getPlaylistTitle(link);
     const playlistId = await this.extractPlaylistId(link);
-    // const playlistVideos = await this.getAllPlaylistVideos(playlistId);
-
+    const playlistVideos = await this.getAllPlaylistVideos(playlistId);
+    console.log(playlistVideos);
     // return;
     const playlist = await playlistModel.create({
       link,
       title,
       description,
       author: userId,
-      // thumbnail: playlistVideos[0].thumbnail,
-      // videos: playlistVideos,
+      thumbnail: playlistVideos[0].thumbnail,
+      videos: playlistVideos,
       playlistUsers: [
         {
           userId: userId,
