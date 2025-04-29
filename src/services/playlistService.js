@@ -67,6 +67,7 @@ class PlaylistService {
       thumbnail: playlistVideos[0].thumbnail,
       videos: playlistVideos,
       playlistUsers: [
+        //
         {
           userId: userId,
           isCompleted: false,
