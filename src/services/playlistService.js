@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { google } from 'googleapis';
+import ytpl from 'ytpl';
 import { GOOGLE_CONSOLE_API_KEY } from '../constants/environment.js';
 import playlistModel from '../models/playlistModel.js';
 import ExceptionHandler from '../utils/error.js';
@@ -43,9 +44,21 @@ class PlaylistService {
     }
     const { title, description } = await this.getPlaylistTitle(link);
     const playlistId = await this.extractPlaylistId(link);
-    const playlistVideos = await this.getAllPlaylistVideos(playlistId);
-    console.log(playlistVideos);
-    // return;
+    // const playlistVideos = await this.getAllPlaylistVideos(playlistId);
+    const playlistData = await ytpl(link);
+
+    // Extract videos and titles
+    const playlistVideosData = playlistData.items.map(async (item) => ({
+      title: item.title,
+      videoId: item.id,
+      thumbnail: item.bestThumbnail.url,
+      videoUrl: item.shortUrl, // or item.url for full URL
+      transcript: mergeTranscriptText(
+        await youtubeVideoService.extractYoutubeVideoTranscript(item.shortUrl)
+      ),
+    })); //
+    const playlistVideos = await Promise.all(playlistVideosData);
+    console.log(playlistVideos); // Added logging for playlist videos
     const playlist = await playlistModel.create({
       link,
       title,
