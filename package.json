@@ -36,6 +36,7 @@
     "nodemailer": "^6.9.16",
     "openai": "^4.96.0",
     "pm2": "^5.4.3",
+    "puppeteer": "^24.7.2",
     "socket.io": "^4.8.1",
     "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",

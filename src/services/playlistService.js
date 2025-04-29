@@ -4,12 +4,17 @@ import { GOOGLE_CONSOLE_API_KEY } from '../constants/environment.js';
 import playlistModel from '../models/playlistModel.js';
 import ExceptionHandler from '../utils/error.js';
 import { isYouTubePlaylist } from '../utils/validator.js';
+import { mergeTranscriptText } from '../utils/youtube.js';
+import youtubeVideoService from './youtubeVideoService.js';
 const YOUTUBE_API_URL = (playlistId) =>
   `https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=${playlistId}&key=${GOOGLE_CONSOLE_API_KEY}`;
 
 const youtube = google.youtube({
   version: 'v3',
   auth: GOOGLE_CONSOLE_API_KEY, // Replace with your API key
+  // configur it so that on server : https://hackathon-lms.onrender.com it will work filne for now it is working fine on localhost
+
+  // universeDomain,
 });
 class PlaylistService {
   async getPlaylists(req, res) {
@@ -36,12 +41,9 @@ class PlaylistService {
       );
       return enrolledPlaylists;
     }
-    // const { title, description } = await this.getPlaylistTitle(link);
-    const title = 'Playlist Title'; // Placeholder, replace with actual title
-    const description = 'Playlist Description'; // Placeholder, replace with actual description
+    const { title, description } = await this.getPlaylistTitle(link);
     const playlistId = await this.extractPlaylistId(link);
     // const playlistVideos = await this.getAllPlaylistVideos(playlistId);
-    const playlistVideos = [{ thumbnail: 'default_thumbnail_url' }];
 
     // return;
     const playlist = await playlistModel.create({
@@ -208,11 +210,11 @@ class PlaylistService {
         videoId: item.snippet.resourceId.videoId,
         thumbnail: item.snippet.thumbnails.default.url,
         videoUrl: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
-        // transcript: mergeTranscriptText(
-        //   await youtubeVideoService.extractYoutubeVideoTranscript(
-        //     `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
-        //   )
-        // ),
+        transcript: mergeTranscriptText(
+          await youtubeVideoService.extractYoutubeVideoTranscript(
+            `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
+          )
+        ),
       }));
       const videos = await Promise.all(videoPromises);
 
