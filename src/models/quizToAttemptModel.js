@@ -32,6 +32,10 @@ const quizToAttemptSchema = new Schema(
       ref: 'quiz',
       required: false,
     },
+    isCompleted: {
+      type: Boolean,
+      default: false,
+    },
     quiz: {
       title: {
         type: String,

@@ -226,9 +226,10 @@ class QuizService {
       }
       return acc;
     }, 0);
-    findQuiz.totalMarks = totalMarks;
+    findQuiz.isCompleted = true;
+    // findQuiz.totalMarks = totalMarks;
     await findQuiz.save();
-    return findQuiz;
+    return totalMarks;
   }
 }
 
