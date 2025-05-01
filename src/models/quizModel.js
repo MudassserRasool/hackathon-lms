@@ -57,6 +57,18 @@ const quizSchema = new Schema(
           type: String,
           required: false,
         },
+        isAttempted: {
+          type: Boolean,
+          default: false,
+        },
+        answer: {
+          type: String,
+          required: false,
+        },
+        isCorrect: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
     userId: {

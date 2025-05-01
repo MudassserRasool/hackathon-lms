@@ -27,6 +27,11 @@ const quizToAttemptSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    quizId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'quiz',
+      required: false,
+    },
     quiz: {
       title: {
         type: String,
@@ -62,6 +67,10 @@ const quizToAttemptSchema = new Schema(
           hint: {
             type: String,
             required: false,
+          },
+          isAttempted: {
+            type: Boolean,
+            default: false,
           },
         },
       ],
