@@ -69,6 +69,10 @@ const playlistSchema = new Schema(
           type: String,
           required: false,
         },
+        // isWatched: {
+        //   type: Boolean,
+        //   default: false,
+        // },
       },
     ],
     playlistUsers: [

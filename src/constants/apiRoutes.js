@@ -3,6 +3,8 @@ import playlistRouter from '../routes/playlistRoutes.js';
 import profileRouter from '../routes/profileRoute.js';
 import quizRouter from '../routes/quizRoutes.js';
 import userRouter from '../routes/user.js';
+import videoRoute from '../routes/videoRoute.js';
+
 const apiRoutes = [
   {
     baseResource: 'user',
@@ -22,6 +24,11 @@ const apiRoutes = [
   {
     baseResource: 'quiz',
     router: quizRouter,
+    middlewares: [requireAuth],
+  },
+  {
+    baseResource: 'video',
+    router: videoRoute,
     middlewares: [requireAuth],
   },
 ];

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-const quizToAttempt = new Schema(
+const quizToAttemptSchema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -72,4 +72,5 @@ const quizToAttempt = new Schema(
   }
 );
 
-export default mongoose.model('quizToAttempt', quizToAttempt);
+const quizToAttemptModel = mongoose.model('quizToAttempt', quizToAttemptSchema);
+export default quizToAttemptModel;

@@ -76,6 +76,8 @@ class AIService {
     // console.log('Result:', result);
     const data = JSON.parse(jsonrepair(result));
     // console.log('Parsed Data:', data);
+    // save in db
+
     return data;
   }
 }

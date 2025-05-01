@@ -19,12 +19,39 @@ const youtube = google.youtube({
 });
 class PlaylistService {
   async getPlaylists(req, res) {
-    console.log('---------------------------------');
+    // console.log('---------------------------------');
     const userId = req.user._id.toString();
-    console.log('---------------------------------');
-    console.log(userId);
-    console.log('---------------------------------');
-    const playlists = await playlistModel.find({ author: userId });
+    // console.log('---------------------------------');
+    // console.log(userId);
+    // console.log('---------------------------------');
+    // const playlists = await playlistModel.aggregate([
+    //   { $match: { author: userId } },
+    //   // {
+    //   //   $project: {
+    //   //     name: 1,
+    //   //     author: 1,
+    //   //     // keep all fields, but remove 'transcript' from videos
+    //   //     videos: {
+    //   //       $map: {
+    //   //         input: '$videos',
+    //   //         as: 'video',
+    //   //         in: {
+    //   //           $mergeObjects: [
+    //   //             '$$video',
+    //   //             { transcript: '$$REMOVE' }, // this removes transcript
+    //   //           ],
+    //   //         },
+    //   //       },
+    //   //     },
+    //   //   },
+    //   // },
+    // ]);
+
+    const playlists = await playlistModel.find(
+      { author: userId },
+      { 'videos.transcript': 0 }
+    );
+
     return playlists;
   }
 
@@ -150,7 +177,10 @@ class PlaylistService {
   }
   async getPlaylistById(req, res) {
     const { id } = req.params;
-    const playlist = await playlistModel.findById(id);
+    const playlist = await playlistModel.findById(
+      { _id: id },
+      { 'videos.transcript': 0 }
+    );
     if (!playlist) {
       ExceptionHandler.NotFound('Playlist not found');
     }

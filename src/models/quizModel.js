@@ -10,6 +10,7 @@ const quizSchema = new Schema(
     videoUrl: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,
