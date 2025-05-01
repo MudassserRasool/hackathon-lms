@@ -4,6 +4,8 @@ import { GOOGLE_CONSOLE_API_KEY } from '../constants/environment.js';
 import playlistModel from '../models/playlistModel.js';
 import ExceptionHandler from '../utils/error.js';
 import { isYouTubePlaylist } from '../utils/validator.js';
+import { mergeTranscriptText } from '../utils/youtube.js';
+import youtubeVideoService from './youtubeVideoService.js';
 const YOUTUBE_API_URL = (playlistId) =>
   `https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=${playlistId}&key=${GOOGLE_CONSOLE_API_KEY}`;
 
@@ -262,11 +264,11 @@ class PlaylistService {
         videoId: item.snippet.resourceId.videoId,
         thumbnail: item.snippet.thumbnails.default.url,
         videoUrl: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
-        // transcript: mergeTranscriptText(
-        //   await youtubeVideoService.extractYoutubeVideoTranscript(
-        //     `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
-        //   )
-        // ),
+        transcript: mergeTranscriptText(
+          await youtubeVideoService.extractYoutubeVideoTranscript(
+            `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
+          )
+        ),
       }));
       const videos = await Promise.all(videoPromises);
 
