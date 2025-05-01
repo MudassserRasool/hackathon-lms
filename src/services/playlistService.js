@@ -45,8 +45,8 @@ class PlaylistService {
     // ]);
 
     const playlists = await playlistModel.find(
-      { author: userId },
-      { 'videos.transcript': 0 }
+      { author: userId }
+      // { 'videos.transcript': 0 }
     );
 
     return playlists;
