@@ -1,12 +1,9 @@
 import axios from 'axios';
 import { google } from 'googleapis';
-import ytpl from 'ytpl';
 import { GOOGLE_CONSOLE_API_KEY } from '../constants/environment.js';
 import playlistModel from '../models/playlistModel.js';
 import ExceptionHandler from '../utils/error.js';
 import { isYouTubePlaylist } from '../utils/validator.js';
-import { mergeTranscriptText } from '../utils/youtube.js';
-import youtubeVideoService from './youtubeVideoService.js';
 const YOUTUBE_API_URL = (playlistId) =>
   `https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=${playlistId}&key=${GOOGLE_CONSOLE_API_KEY}`;
 
@@ -71,27 +68,34 @@ class PlaylistService {
     }
     const { title, description } = await this.getPlaylistTitle(link);
     const playlistId = await this.extractPlaylistId(link);
-    // const playlistVideos = await this.getAllPlaylistVideos(playlistId);
-    const playlistData = await ytpl(link);
+    const playlistData = await this.getPlaylistVideos(playlistId);
+    const playlistVideos = playlistData.videos;
+    // const playlistData = await ytpl(link);
 
     // Extract videos and titles
-    const playlistVideosData = playlistData.items.map(async (item) => ({
-      title: item.title,
-      videoId: item.id,
-      thumbnail: item.bestThumbnail.url,
-      videoUrl: item.shortUrl, // or item.url for full URL
-      transcript: mergeTranscriptText(
-        await youtubeVideoService.extractYoutubeVideoTranscript(item.shortUrl)
-      ),
-    })); //
-    const playlistVideos = await Promise.all(playlistVideosData);
-    console.log(playlistVideos); // Added logging for playlist videos
+    // const playlistVideosData = playlistData.items.map(async (item) => ({
+    //   title: item.title,
+    //   videoId: item.id,
+    //   thumbnail: item.bestThumbnail.url,
+    //   videoUrl: item.shortUrl, // or item.url for full URL
+    //   transcript: mergeTranscriptText(
+    //     await youtubeVideoService.extractYoutubeVideoTranscript(item.shortUrl)
+    //   ),
+    // })); //
+    // const playlistVideos = await Promise.all(playlistVideosData);
+    // console.log(
+    //   '================== styart playl;ist videos main===================='
+    // );
+    // console.log(playlistVideos); // Added logging for playlist videos
+    // console.log(
+    //   '==================end  playl;ist videos main===================='
+    // );
     const playlist = await playlistModel.create({
       link,
       title,
       description,
       author: userId,
-      thumbnail: playlistVideos[0].thumbnail,
+      thumbnail: playlistVideos[0]?.thumbnail || '',
       videos: playlistVideos,
       playlistUsers: [
         //
@@ -249,43 +253,51 @@ class PlaylistService {
         pageToken: pageToken,
       });
 
+      // console.log('*****************************************');
+      // console.log(response.data.items);
+      // console.log('*****************************************');
+
       const videoPromises = response.data.items.map(async (item) => ({
         title: item.snippet.title,
         videoId: item.snippet.resourceId.videoId,
         thumbnail: item.snippet.thumbnails.default.url,
         videoUrl: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
-        transcript: mergeTranscriptText(
-          await youtubeVideoService.extractYoutubeVideoTranscript(
-            `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
-          )
-        ),
+        // transcript: mergeTranscriptText(
+        //   await youtubeVideoService.extractYoutubeVideoTranscript(
+        //     `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`
+        //   )
+        // ),
       }));
       const videos = await Promise.all(videoPromises);
 
       const nextPageToken = response.data.nextPageToken;
 
-      return { videos, nextPageToken };
+      console.log('*****************************************');
+      console.log(videos);
+      console.log('*****************************************');
+
+      return { videos: videos, nextPageToken };
     } catch (error) {
       console.error('Error fetching playlist videos:', error);
       throw error;
     }
   }
 
-  async getAllPlaylistVideos(playlistId) {
-    let allVideos = [];
-    let pageToken;
+  // async getAllPlaylistVideos(playlistId) {
+  //   let allVideos = [];
+  //   let pageToken;
 
-    do {
-      const { videos, nextPageToken } = await this.getPlaylistVideos(
-        playlistId,
-        pageToken
-      );
-      allVideos = allVideos.concat(videos);
-      pageToken = nextPageToken;
-    } while (pageToken);
+  //   do {
+  //     const { videos, nextPageToken } = await this.getPlaylistVideos(
+  //       playlistId,
+  //       pageToken
+  //     );
+  //     allVideos = allVideos.concat(videos);
+  //     pageToken = nextPageToken;
+  //   } while (pageToken);
 
-    return allVideos;
-  }
+  //   return allVideos;
+  // }
 }
 
 export default new PlaylistService();

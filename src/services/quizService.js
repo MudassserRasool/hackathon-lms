@@ -134,9 +134,12 @@ class QuizService {
     if (!quizId) {
       ExceptionHandler.BadRequest('Quiz ID is required');
     }
-    const findQuiz = await quizToAttemptModel.findOne({ _id: quizId });
+    const findQuiz = await quizToAttemptModel.findOne({ _id: quizId, userId });
     if (!findQuiz) {
       ExceptionHandler.BadRequest('Quiz not found for this video URL');
+    }
+    if (findQuiz.isCompleted === true) {
+      ExceptionHandler.BadRequest('Quiz is already completed');
     }
     console.log('findQuiz:', findQuiz);
     const questions = findQuiz.quiz.questions;
@@ -227,6 +230,9 @@ class QuizService {
       return acc;
     }, 0);
     findQuiz.isCompleted = true;
+    findQuiz.totalQuestions = findQuiz.quiz.questions.length;
+    findQuiz.totalAttempted = totalMarks;
+
     // findQuiz.totalMarks = totalMarks;
     await findQuiz.save();
     return totalMarks;
